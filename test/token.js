@@ -1,87 +1,73 @@
-const expectedExceptionPromise = require("../utils/expectedException.js");
-const BlockportTokenAbi = artifacts.require('./BlockportToken.sol')
+var MyToken = artifacts.require("./Circle.sol");
 
-let settings = require('../tokenSettings.json');
+contract('Circle', (accounts) => {
 
-contract('BlockportToken', function(accounts) {
+    var creatorAddress = accounts[0];
+    var recipientAddress = accounts[1];
+    var delegatedAddress = accounts[2];
 
-    const admin = accounts[0];
-    const user1 = accounts[1];
-    const user2 = accounts[2];
-    const user3 = accounts[3];
-    const user4 = accounts[4];
-    const user5 = accounts[5];
+    it("should contain 10000 MyToken in circulation", () => {
+        return MyToken.deployed().then((instance) => {
+            return instance.totalSupply.call();
+        }).then(balance => {
+            assert.equal(balance.valueOf(), 10000, "10000 MyToken are not in circulation");
+        });
+    });
 
-    describe("Initial settings", function() {
+    it("should contain 10000 MyToken in the creator balance", () => {
+        return MyToken.deployed().then(instance => {
+            return instance.balanceOf.call(creatorAddress);
+        }).then(balance => {
+            assert.equal(balance.valueOf(), 10000, "10000 wasn't in the creator balance");
+        });
+    });
 
-        it ('should be possible to create a new Blockport ("BPT") token', async() => { 
-            BlockportToken = await BlockportTokenAbi.new(settings.maxTokenSupply);
-            assert.isNotNull(BlockportToken);
-        })
+    it("should transfer 1000 MyToken to the recipient balance", () => {
+        var myTokenInstance;
+        return MyToken.deployed().then(instance => {
+            myTokenInstance = instance;
+            return myTokenInstance.transfer(recipientAddress, 1000, {
+                from: creatorAddress
+            });
+        }).then(result => {
+            return myTokenInstance.balanceOf.call(recipientAddress);
+        }).then(recipientBalance => {
+            assert.equal(recipientBalance.valueOf(), 1000, "1000 wasn't in the recipient balance");
+            return myTokenInstance.balanceOf.call(creatorAddress);
+        }).then(creatorBalance => {
+            assert.equal(creatorBalance.valueOf(), 9000, "9000 wasn't in the creator balance");
+        });
+    });
 
-        it ('should have the correct token settings', async() => { 
-            var name = await BlockportToken.name();
-            assert.strictEqual(name, settings.name);
-            var symbol = await BlockportToken.symbol();
-            assert.strictEqual(symbol, settings.symbol);
-            var decimals = await BlockportToken.decimals();
-            assert.strictEqual(decimals.toNumber(), settings.decimals);            
-            var cap = await BlockportToken.cap();
-            assert.strictEqual(cap.toNumber(), settings.maxTokenSupply);
-            
-            var paused = await BlockportToken.paused();
-            assert.strictEqual(true, paused);
-        })
+    it("should approve 500 MyToken to the delegated balance", () => {
+        var myTokenInstance;
+        return MyToken.deployed().then(instance => {
+            myTokenInstance = instance;
+            return myTokenInstance.approve(delegatedAddress, 500, {
+                from: creatorAddress
+            });
+        }).then(result => {
+            return myTokenInstance.allowance.call(creatorAddress, delegatedAddress);
+        }).then(delegatedAllowance => {
+            assert.equal(delegatedAllowance.valueOf(), 500, "500 wasn't approved to the delegated balance");
+        });
+    });
 
-        it ('should be in paused and non-transfer mode', async() => { 
-            
-            var paused = await BlockportToken.paused();
-            assert.strictEqual(true, paused);
-        })
-    })
-    
-    describe("State transfers", function() {
+    it("should transfer 200 MyToken from the creator to the alt recipient via the delegated address", () => {
+        var myTokenInstance;
+        return MyToken.deployed().then(instance => {
+            myTokenInstance = instance;
+            return myTokenInstance.transferFrom(creatorAddress, recipientAddress, 200, {
+                from: delegatedAddress
+            });
+        }).then(result => {
+            return myTokenInstance.balanceOf.call(recipientAddress);
+        }).then(recipientBalance => {
+            assert.equal(recipientBalance.valueOf(), 1200, "1200 wasn't in the recipient balance");
+            return myTokenInstance.allowance.call(creatorAddress, delegatedAddress);
+        }).then(delegatedAllowance => {
+            assert.equal(delegatedAllowance.valueOf(), 300, "300 wasn't set as the delegated balance");
+        });
+    });
 
-        it ('should NOT be possible to pause if it is already paused', async() => { 
-            expectedExceptionPromise(() => BlockportToken.pause());
-
-            var paused = await BlockportToken.paused();
-            assert.strictEqual(true, paused);
-        })
-        
-        it ('should NOT be possible for anyone besides the owner to unpause', async() => { 
-            expectedExceptionPromise(() => BlockportToken.unpause({from : user1}));
-        })
-
-        it ('should be possible to unpause if it is in paused', async() => { 
-            var tx = await BlockportToken.unpause();
-
-            assert.strictEqual("Unpause", tx.logs[0].event)
-            var paused = await BlockportToken.paused();
-            assert.strictEqual(false, paused);
-        })
-
-        it ('should NOT be possible for anyone besides the owner to pause', async() => { 
-            expectedExceptionPromise(() => BlockportToken.pause({from : user1}));
-        })
-
-        it ('should be possible to pause again if it un-paused', async() => { 
-            var tx = await BlockportToken.pause();
-
-            assert.strictEqual("Pause", tx.logs[0].event)
-            var paused = await BlockportToken.paused();
-            assert.strictEqual(true, paused);
-        })
-    })
-
-    describe("Funding", function() {
-
-        it ('should NOT be possible to purchase in non-funding mode', async() => { 
-            expectedExceptionPromise(() => BlockportToken.purchase({from : user1, value : 1000}));
-        })
-
-        it ('should NOT be possible for anyone besides the owner to mint new tokens', async() => { 
-            expectedExceptionPromise(() => BlockportToken.mint(user1, 1000, {from : user1}));
-        })
-    })
-})
+});

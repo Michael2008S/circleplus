@@ -1,6 +1,6 @@
 
 import Truffle              from 'truffle-contract';
-import PresaleToken_json    from '../../build/contracts/PresaleToken';
+import PresaleToken_json    from '../../build/contracts/Circle';
 import TokenManager_json    from '../../build/contracts/TokenManager';
 import Const                from './constants';
 

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 interface ERC20 {
-    function transferForm(address _from, address _to, uint _value) public returns (bool);
+    function transferFrom(address _from, address _to, uint _value) public returns (bool);
 
     function approve(address _spender, uint _value) public returns (bool);
 

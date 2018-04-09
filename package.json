@@ -4,6 +4,8 @@
     },
     "scripts": {
         "test": "truffle test",
-        "flatten": "mkdir -p build && truffle-flattener contracts/Circle.sol contracts/CircleCrowdsale.sol  > build/flattened.sol"
+        "flatten": "mkdir -p build && truffle-flattener contracts/Circle.sol contracts/CircleCrowdsale.sol  > build/flattened.sol",
+        "flatten-circle": "mkdir -p build && truffle-flattener contracts/Circle.sol  > build/flattened-circle.sol",
+        "flatten-crowdsale": "mkdir -p build && truffle-flattener contracts/CircleCrowdsale.sol  > build/flattened-crowdsale.sol"
     }
 }

@@ -53,8 +53,10 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
 
     // Constructor
     // ============
-    function CircleCrowdsale(uint256 _rate, address _wallet, ERC20 _token)
-    MintedCrowdsale
+    function CircleCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, ERC20 _token)
+    MintedCrowdsale()
+    FinalizableCrowdsale()
+    TimedCrowdsale(_startTime, _endTime)
     Crowdsale(_rate, _wallet, _token)
     public {
     }

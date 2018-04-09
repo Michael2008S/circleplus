@@ -765,7 +765,7 @@ contract TokenVesting is Ownable {
 
 // File: contracts/CircleCrowdsale.sol
 
-contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
+contract CircleCrowdsale is MintedCrowdsale {
 
     // Crowdsale Stage
     // ============
@@ -779,7 +779,7 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
     uint256 public totalSupplyMax = 20000000000 * (10 ** 18); // There will be total 20,000,000,000 Circle Tokens
 
     uint256 public angelRound = 100000000 * (10 ** 18);   // Angel Investors 100,000,000 (10%)
-    uint256 public preSaleRound = 400000000 * (10 ** 18);   // PreSale Round 400,000,000 (10%)
+    uint256 public preSaleRound = 400000000 * (10 ** 18);   // PreSale Round 400,000,000 (20%)
     uint256 public openRound = 100000000 * (10 ** 18);   // Open Round 100,000,000 (10%)
 
     uint256 public teamFund = 400000000 * (10 ** 18);   // Team/Foundation 400,000,000 (20%) cliff 6mon
@@ -809,26 +809,17 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
     uint256 public constant TEAM_VESTING_CLIFF = 30 * 6 days;
     uint256 public constant TEAM_VESTING_DURATION = 2 years;
 
+
+    ERC20 _token = new Circle();
+
     // Constructor
     // ============
-    function CircleCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, ERC20 _token)
-    MintedCrowdsale()
-    FinalizableCrowdsale()
-    TimedCrowdsale(_startTime, _endTime)
+    function CircleCrowdsale(uint256 _openingTime, uint256 _closingTime, uint256 _rate, address _wallet) public
+        //    TimedCrowdsale(_openingTime, _closingTime)
     Crowdsale(_rate, _wallet, _token)
-    public {
+    {
     }
     // =============
-
-
-    // Token Deployment
-    // =================
-    //    function createTokenContract() internal returns (MintableToken) {
-    //        return new Circle();
-    //        // Deploys the ERC20 token. Automatically called when crowdsale contract is deployed
-    //    }
-    // ==================
-
 
     function() external payable {
         revert();
@@ -870,7 +861,7 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
     // ====================================================================
     function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) external {
 
-        require(!isFinalized);
+//        require(!isFinalized);
 
         uint256 alreadyMinted = token.totalSupply();
         require(alreadyMinted < totalSupplyMax);
@@ -882,7 +873,7 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
 
         //  remind token to another wallet
 
-        finalize();
+//        finalize();
     }
     // ===============================
 

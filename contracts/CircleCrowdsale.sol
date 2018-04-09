@@ -29,6 +29,14 @@ contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
     uint256 public marketingFund = 400000000 * (10 ** 18);   // Marketing 400,000,000 (20%)
     // ==============================
 
+    // Amount minted in Every Stage
+    // ==================
+    uint256 public totalTokenMintedAngel;
+    uint256 public totalTokenMintedPreSale;
+    uint256 public totalTokenMintedOpen;
+
+    // ===================
+
     // Stage Rate
     // ============
     uint256 private _angelRate = 60000;
@@ -66,16 +74,35 @@ contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
         revert();
     }
 
-    function investByLegalTender(address _beneficiary, uint256 _value, uint _stage) external {
+    function investByLegalTender(address _beneficiary, uint256 _value, uint _stage) external returns (bool) {
         if (_stage == uint(CrowdsaleStage.AngelRound)) {
+            _amount = _angelRate * _value;
+            if (totalTokenMintedAngel + _amount > angelRound) {
+                return false;
+            }
             // give tokens to angel with lock 90 days
             angelTimeLock = new TokenTimelock(token, _beneficiary, uint64(now + 90 days));
-            MintableToken(token).mint(angelTimeLock, _angelRate * _value);
+            MintableToken(token).mint(angelTimeLock, _amount);
+            totalTokenMintedAngel += _amount;
         } else if (_stage == uint(CrowdsaleStage.PreSaleRound)) {
-            MintableToken(token).mint(_beneficiary, _preSaleRate * _value);
+            _amount = _preSaleRate * _value;
+            if (totalTokenMintedPreSale + _amount > preSaleRound) {
+                return false;
+            }
+            MintableToken(token).mint(_beneficiary, _amount);
+            totalTokenMintedPreSale += _amount;
         } else if (_stage == uint(CrowdsaleStage.OpenRound)) {
+
+            _amount = _openRate * _value;
+            if (totalTokenMintedOpen + _amount > preSaleRound) {
+                return false;
+            }
+
             MintableToken(token).mint(_beneficiary, _openRate * _value);
+            totalTokenMintedOpen += _openRate * _value;
         }
+
+        return true;
     }
 
     // Finish: Mint Extra Tokens as needed before finalizing the Crowdsale.

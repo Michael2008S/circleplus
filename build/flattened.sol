@@ -874,7 +874,7 @@ contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
         require(alreadyMinted < totalSupplyMax);
 
         TokenVesting _teamTokenVesting = new TokenVesting(_teamFundWallet, now, TEAM_VESTING_CLIFF, TEAM_VESTING_DURATION, true);
-        MintableToken(token).mint(_teamFundWallet, teamFund);
+        MintableToken(token).mint(_teamTokenVesting, teamFund);
         MintableToken(token).mint(_communityFundWallet, communityFund);
         MintableToken(token).mint(_marketingFundWallet, marketingFund);
 

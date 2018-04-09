@@ -765,7 +765,7 @@ contract TokenVesting is Ownable {
 
 // File: contracts/CircleCrowdsale.sol
 
-contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
+contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
 
     // Crowdsale Stage
     // ============

@@ -7,7 +7,7 @@ import "./zeppelin/crowdsale/distribution/FinalizableCrowdsale.sol";
 import "./zeppelin/token/ERC20/TokenTimelock.sol";
 import "./zeppelin/token/ERC20/TokenVesting.sol";
 
-contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
+contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
 
     // Crowdsale Stage
     // ============

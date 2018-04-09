@@ -41,21 +41,21 @@ contract('CircleCrowdsale', (accounts) => {
     it("should transfer 1 token to the creator address",()=>{
     	var circleCrowdsaleInstance;
     	return CircleCrowdsale.deployed().then(instance =>{
-    		circleTokenInstance = instance;
-    		return circleTokenInstance.buy({from:creatorAddress,value: web3.toWei(1,'ether')});
+    		circleCrowdsaleInstance = instance;
+    		return circleCrowdsaleInstance.buy({from:creatorAddress,value: web3.toWei(1,'ether')});
     	}).then(result =>{
-    		return circleTokenInstance.availableBalance.call();
+    		return circleCrowdsaleInstance.availableBalance.call();
     	}).then(availableBalance => {
     		assert.equal(availableBalance.valueOf(),999,"999 wasn't in the creator balance");
     	});
     });
 
 
-    it("should contain 9001 CircleToken in the creator balance", () =>{
+    it("should contain 19,999,999,001 CircleToken in the creator balance", () =>{
     	return CircleToken.deployed().then(instance => {
     		return instance.balanceOf.call(creatorAddress);
     	}).then(balance => {
-    		assert.equal(balance.valueOf(),9001,"9001 wasn't in the creator balance");
+    		assert.equal(balance.valueOf(),19999999001,"19,999,999,001 wasn't in the creator balance");
     	})
     });
 

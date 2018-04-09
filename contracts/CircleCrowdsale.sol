@@ -1,9 +1,9 @@
 pragma solidity ^0.4.18;
 
 import "./Circle.sol";
-import "./zeppelin/crowdsale/validation/CappedCrowdsale.sol";
+import "./zeppelin/crowdsale/Crowdsale.sol";
 
-contract CircleCrowdsale is CappedCrowdsale {
+contract CircleCrowdsale is Crowdsale {
 
     // Crowdsale Stage
     // ============
@@ -41,12 +41,10 @@ contract CircleCrowdsale is CappedCrowdsale {
 
     // Constructor
     // ============
-    function CircleCrowdsale(uint256 _rate, address _wallet, uint256 _goal, uint256 _cap)
-    CappedCrowdsale(_cap)
+    function CircleCrowdsale(uint256 _rate, address _wallet)
     FinalizableCrowdsale()
     Crowdsale(_rate, _wallet)
     public {
-        require(_goal <= _cap);
     }
     // =============
 

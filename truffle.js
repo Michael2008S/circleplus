@@ -25,7 +25,10 @@ module.exports = {
         development: {
             host: "localhost",
             port: 7545,
-            network_id: "*"
+            network_id: "*",
+            gasPrice: 2000000000,
+            gas: 7e6
+
         },
 
         ropsten: {
@@ -52,10 +55,10 @@ module.exports = {
 
 
 
-    // solc: {
-    //     optimizer: {
-    //         enabled: true,
-    //         runs: 200
-    //     }
-    // }
+    solc: {
+        optimizer: {
+            enabled: true,
+            runs: 200
+        }
+    }
 };

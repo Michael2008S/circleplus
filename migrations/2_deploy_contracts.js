@@ -1,3 +1,4 @@
+var Circle = artifacts.require("./Circle.sol");
 var CircleCrowdsale = artifacts.require("./CircleCrowdsale.sol");
 
 module.exports = function(deployer) {

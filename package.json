@@ -1,5 +1,9 @@
 {
     "dependencies": {
         "truffle-hdwallet-provider": "^0.0.3"
+    },
+    "scripts": {
+        "test": "truffle test",
+        "flatten": "mkdir -p build && truffle-flattener contracts/Circle.sol contracts/CircleCrowdsale.sol  > build/flattened.sol"
     }
 }

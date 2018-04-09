@@ -75,6 +75,7 @@ contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
     }
 
     function investByLegalTender(address _beneficiary, uint256 _value, uint _stage) external returns (bool) {
+        uint256 _amount;
         if (_stage == uint(CrowdsaleStage.AngelRound)) {
             _amount = _angelRate * _value;
             if (totalTokenMintedAngel + _amount > angelRound) {
@@ -108,6 +109,9 @@ contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
     // Finish: Mint Extra Tokens as needed before finalizing the Crowdsale.
     // ====================================================================
     function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) external {
+
+        require(!isFinalized);
+
         uint256 alreadyMinted = token.totalSupply();
         require(alreadyMinted < totalSupplyMax);
 
@@ -116,8 +120,9 @@ contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
         MintableToken(token).mint(_communityFundWallet, communityFund);
         MintableToken(token).mint(_marketingFundWallet, marketingFund);
 
-        // TODO remind token to another wallet
+        //  remind token to another wallet
 
+        finalize();
     }
     // ===============================
 

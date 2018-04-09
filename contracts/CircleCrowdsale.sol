@@ -2,8 +2,12 @@ pragma solidity ^0.4.18;
 
 import "./Circle.sol";
 import "./zeppelin/crowdsale/Crowdsale.sol";
+import "./zeppelin/crowdsale/emission/MintedCrowdsale.sol";
+import "./zeppelin/crowdsale/distribution/FinalizableCrowdsale.sol";
+import "./zeppelin/token/ERC20/TokenTimelock.sol";
+import "./zeppelin/token/ERC20/TokenVesting.sol";
 
-contract CircleCrowdsale is Crowdsale {
+contract CircleCrowdsale is Crowdsale, MintedCrowdsale, FinalizableCrowdsale {
 
     // Crowdsale Stage
     // ============
@@ -36,14 +40,14 @@ contract CircleCrowdsale is Crowdsale {
     TokenTimelock public angelTimeLock;
 
     // team vesting
-    uint256 public constant TEAM_VESTING_CLIFF = 30*6 days;
+    uint256 public constant TEAM_VESTING_CLIFF = 30 * 6 days;
     uint256 public constant TEAM_VESTING_DURATION = 2 years;
 
     // Constructor
     // ============
-    function CircleCrowdsale(uint256 _rate, address _wallet)
-    FinalizableCrowdsale()
-    Crowdsale(_rate, _wallet)
+    function CircleCrowdsale(uint256 _rate, address _wallet, ERC20 _token)
+    MintedCrowdsale
+    Crowdsale(_rate, _wallet, _token)
     public {
     }
     // =============
@@ -51,10 +55,10 @@ contract CircleCrowdsale is Crowdsale {
 
     // Token Deployment
     // =================
-    function createTokenContract() internal returns (MintableToken) {
-        return new Circle();
-        // Deploys the ERC20 token. Automatically called when crowdsale contract is deployed
-    }
+    //    function createTokenContract() internal returns (MintableToken) {
+    //        return new Circle();
+    //        // Deploys the ERC20 token. Automatically called when crowdsale contract is deployed
+    //    }
     // ==================
 
 
@@ -63,28 +67,27 @@ contract CircleCrowdsale is Crowdsale {
     }
 
     function investByLegalTender(address _beneficiary, uint256 _value, uint _stage) external {
-
-        if (stage == CrowdsaleStage.AngelRound) {
+        if (_stage == uint(CrowdsaleStage.AngelRound)) {
             // give tokens to angel with lock 90 days
             angelTimeLock = new TokenTimelock(token, _beneficiary, uint64(now + 90 days));
-            token.mint(angelTimeLock, _angelRate * _value);
-        } else if (stage == CrowdsaleStage.PreSaleRound) {
-            token.mint(_beneficiary, _preSaleRate * _value);
-        } else if (stage == CrowdsaleStage.OpenRound) {
-            token.mint(_beneficiary, _openRate * _value);
+            MintableToken(token).mint(angelTimeLock, _angelRate * _value);
+        } else if (_stage == uint(CrowdsaleStage.PreSaleRound)) {
+            MintableToken(token).mint(_beneficiary, _preSaleRate * _value);
+        } else if (_stage == uint(CrowdsaleStage.OpenRound)) {
+            MintableToken(token).mint(_beneficiary, _openRate * _value);
         }
     }
 
     // Finish: Mint Extra Tokens as needed before finalizing the Crowdsale.
     // ====================================================================
-    function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet){
+    function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) external {
         uint256 alreadyMinted = token.totalSupply();
-        require(alreadyMinted < maxTokens);
+        require(alreadyMinted < totalSupplyMax);
 
         TokenVesting _teamTokenVesting = new TokenVesting(_teamFundWallet, now, TEAM_VESTING_CLIFF, TEAM_VESTING_DURATION, true);
-        token.mint(_teamFundWallet, teamFund);
-        token.mint(_communityFundWallet, communityFund);
-        token.mint(_marketingFundWallet, marketingFund);
+        MintableToken(token).mint(_teamFundWallet, teamFund);
+        MintableToken(token).mint(_communityFundWallet, communityFund);
+        MintableToken(token).mint(_marketingFundWallet, marketingFund);
 
         // TODO remind token to another wallet
 

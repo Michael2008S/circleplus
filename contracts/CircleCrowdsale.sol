@@ -3,11 +3,12 @@ pragma solidity ^0.4.18;
 import "./Circle.sol";
 import "./zeppelin/crowdsale/Crowdsale.sol";
 import "./zeppelin/crowdsale/emission/MintedCrowdsale.sol";
+import "./zeppelin/crowdsale/validation/TimedCrowdsale.sol";
 import "./zeppelin/crowdsale/distribution/FinalizableCrowdsale.sol";
 import "./zeppelin/token/ERC20/TokenTimelock.sol";
 import "./zeppelin/token/ERC20/TokenVesting.sol";
 
-contract CircleCrowdsale is MintedCrowdsale {
+contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
 
     // Crowdsale Stage
     // ============
@@ -57,7 +58,7 @@ contract CircleCrowdsale is MintedCrowdsale {
     // Constructor
     // ============
     function CircleCrowdsale(uint256 _openingTime, uint256 _closingTime, uint256 _rate, address _wallet) public
-        //    TimedCrowdsale(_openingTime, _closingTime)
+    TimedCrowdsale(_openingTime, _closingTime)
     Crowdsale(_rate, _wallet, _token)
     {
     }
@@ -103,7 +104,7 @@ contract CircleCrowdsale is MintedCrowdsale {
     // ====================================================================
     function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) external {
 
-//        require(!isFinalized);
+        require(!isFinalized);
 
         uint256 alreadyMinted = token.totalSupply();
         require(alreadyMinted < totalSupplyMax);
@@ -115,14 +116,14 @@ contract CircleCrowdsale is MintedCrowdsale {
 
         //  remind token to another wallet
 
-//        finalize();
+        finalize();
     }
     // ===============================
 
 
     // REMOVE THIS FUNCTION ONCE YOU ARE READY FOR PRODUCTION
     // USEFUL FOR TESTING `finish()` FUNCTION
-    function hasEnded() public view returns (bool) {
-        return true;
-    }
+    //    function hasEnded() public view returns (bool) {
+    //        return true;
+    //    }
 }

@@ -4,7 +4,9 @@ var CircleCrowdsale = artifacts.require("./CircleCrowdsale.sol");
 module.exports = function (deployer) {
     // Deploying..
 
-    const startTime = Math.round((new Date(Date.now() - 86400000).getTime()) / 1000); // Yesterday
+    // starttime must bigger than block time.
+
+    const startTime = Math.round((new Date(Date.now() + 86400000).getTime()) / 1000); // Tommrrow
     const endTime = Math.round((new Date().getTime() + (86400000 * 20)) / 1000); // Today + 20 days
 
     // deployer.deploy(Circle).then(function() {

@@ -123,7 +123,7 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
 
     // REMOVE THIS FUNCTION ONCE YOU ARE READY FOR PRODUCTION
     // USEFUL FOR TESTING `finish()` FUNCTION
-    //    function hasEnded() public view returns (bool) {
-    //        return true;
-    //    }
+    function hasEnded() public view returns (bool) {
+        return true;
+    }
 }

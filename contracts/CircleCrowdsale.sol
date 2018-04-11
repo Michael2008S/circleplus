@@ -20,7 +20,7 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
 
     // Token Distribution
     // =============================
-    uint256 public totalSupplyMax = 20000000000 * (10 ** 18); // There will be total 20,000,000,000 Circle Tokens
+    uint256 public totalSupplyMax   = 2000000000 * (10 ** 18); // There will be total 2,000,000,000 Circle Tokens
 
     uint256 public angelRound       = 200000000 * (10 ** 18);   // Angel Investors 200,000,000 (10%)
     uint256 public preSaleRound     = 400000000 * (10 ** 18);   // PreSale Round 400,000,000 (20%)

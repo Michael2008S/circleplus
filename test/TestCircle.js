@@ -5,11 +5,11 @@ contract('Circle',(accounts) => {
 	var recipientAddress = accounts[1];
 	var delegatedAddress = accounts[2];
 
-	it("should contain 20,000,000,000 Circle in circulation",() => {
-		return CircleToken.deployed().then((instance) => {
-			return instance.totalSupply.call();
-		}).then(balance => {
-			assert.equal(balance.valueOf(),20000000000,"20,000,000,000 Circle Token are not in circulation");
-		});
-	});
+	// it("should contain 20,000,000,000 Circle in circulation",() => {
+	// 	return CircleToken.deployed().then((instance) => {
+	// 		return instance.totalSupply.call();
+	// 	}).then(balance => {
+	// 		assert.equal(balance.valueOf(),20000000000,"20,000,000,000 Circle Token are not in circulation");
+	// 	});
+	// });
 });

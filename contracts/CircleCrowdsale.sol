@@ -2,13 +2,14 @@ pragma solidity ^0.4.18;
 
 import "./Circle.sol";
 import "./zeppelin/crowdsale/Crowdsale.sol";
+import "./zeppelin/ownership/Ownable.sol";
 import "./zeppelin/crowdsale/emission/MintedCrowdsale.sol";
 import "./zeppelin/crowdsale/validation/TimedCrowdsale.sol";
 import "./zeppelin/crowdsale/distribution/FinalizableCrowdsale.sol";
 import "./zeppelin/token/ERC20/TokenTimelock.sol";
 import "./zeppelin/token/ERC20/TokenVesting.sol";
 
-contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
+contract CircleCrowdsale is Ownable, MintedCrowdsale, FinalizableCrowdsale {
 
     // Crowdsale Stage
     // ============
@@ -68,7 +69,7 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
         revert();
     }
 
-    function investByLegalTender(address _beneficiary, uint256 _value, uint _stage) external returns (bool) {
+    function investByLegalTender(address _beneficiary, uint256 _value, uint _stage) onlyOwner external returns (bool)  {
         uint256 _amount;
         if (_stage == uint(CrowdsaleStage.AngelRound)) {
             _amount = _angelRate * _value;
@@ -93,8 +94,8 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
                 return false;
             }
 
-            MintableToken(token).mint(_beneficiary, _openRate * _value);
-            totalTokenMintedOpen += _openRate * _value;
+            MintableToken(token).mint(_beneficiary, _amount);
+            totalTokenMintedOpen += _amount;
         }
 
         return true;
@@ -102,7 +103,7 @@ contract CircleCrowdsale is MintedCrowdsale, FinalizableCrowdsale {
 
     // Finish: Mint Extra Tokens as needed before finalizing the Crowdsale.
     // ====================================================================
-    function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) external {
+    function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) onlyOwner external {
 
         require(!isFinalized);
 

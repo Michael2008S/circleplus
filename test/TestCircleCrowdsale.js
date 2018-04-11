@@ -58,25 +58,81 @@ contract('CircleCrowdsale', function (accounts) {
     it('setReservedHolder should run right~ ', function (done) {
         CircleTokenCrowdsale.deployed().then(async function (instance) {
             // const data = await instance.sendTransaction({from: accounts[7], value: web3.toWei(1, "ether")});
-            await instance.setReservedHolder(accounts[2],accounts[3],accounts[4]);
+            await instance.setReservedHolder(accounts[1],accounts[2],accounts[3]);
             const tokenAddress = await instance.token.call();
+
+            const circleTokenInstance = CircleToken.at(tokenAddress);
+
+            const totalSupply = await circleTokenInstance.totalSupply();
+            console.log("totalSupply:", totalSupply);
             console.log("tokenAddress:", tokenAddress);
 
-            const teamCircleToken = CircleToken.at(accounts[2]);
-            const teamTokenAmount = await teamCircleToken.balanceOf(accounts[2]);
-            assert.equal(teamTokenAmount.toNumber(), 400000000 * 1e18, 'The team token amount did not equal 400000000');
 
-            const communityCircleToken = CircleToken.at(accounts[3]);
-            const communityTokenAmount = await communityCircleToken.balanceOf(accounts[3]);
+            // TODO test vesting
+            const teamTokenAmount = await circleTokenInstance.balanceOf(accounts[1]);
+            assert.equal(teamTokenAmount.toNumber(), 0 * 1e18, 'The team vesting token amount did not equal 0');
+
+            const communityCircleToken = CircleToken.at(tokenAddress);
+            const communityTokenAmount = await communityCircleToken.balanceOf(accounts[2]);
             assert.equal(communityTokenAmount.toNumber(), 400000000 * 1e18, 'The community token amount did not equal 400000000');
 
-            const marketingCircleToken = CircleToken.at(accounts[4]);
-            const marketingTokenAmount = await marketingCircleToken.balanceOf(accounts[4]);
+            const marketingCircleToken = CircleToken.at(tokenAddress);
+            const marketingTokenAmount = await marketingCircleToken.balanceOf(accounts[3]);
             assert.equal(marketingTokenAmount.toNumber(), 400000000 * 1e18, 'The marketing token amount did not equal 400000000');
 
             done();
         });
     });
+
+
+    it('setReservedHolder should run right~ ', function (done) {
+        CircleTokenCrowdsale.deployed().then(async function (instance) {
+            // const data = await instance.sendTransaction({from: accounts[7], value: web3.toWei(1, "ether")});
+            await instance.setReservedHolder(accounts[1],accounts[2],accounts[3]);
+            const tokenAddress = await instance.token.call();
+
+            const circleTokenInstance = CircleToken.at(tokenAddress);
+
+            const totalSupply = await circleTokenInstance.totalSupply();
+            console.log("totalSupply:", totalSupply);
+            console.log("tokenAddress:", tokenAddress);
+
+
+            // TODO test vesting
+            const teamTokenAmount = await circleTokenInstance.balanceOf(accounts[1]);
+            assert.equal(teamTokenAmount.toNumber(), 0 * 1e18, 'The team vesting token amount did not equal 0');
+
+            const communityCircleToken = CircleToken.at(tokenAddress);
+            const communityTokenAmount = await communityCircleToken.balanceOf(accounts[2]);
+            assert.equal(communityTokenAmount.toNumber(), 400000000 * 1e18, 'The community token amount did not equal 400000000');
+
+            const marketingCircleToken = CircleToken.at(tokenAddress);
+            const marketingTokenAmount = await marketingCircleToken.balanceOf(accounts[3]);
+            assert.equal(marketingTokenAmount.toNumber(), 400000000 * 1e18, 'The marketing token amount did not equal 400000000');
+
+            done();
+        });
+    });
+
+
+    // it('setReservedHolder should run right~ ', function (done) {
+    //     CircleTokenCrowdsale.deployed().then(async function (instance) {
+    //         // const data = await instance.sendTransaction({from: accounts[7], value: web3.toWei(1, "ether")});
+    //         await instance.setRemindHolder(accounts[4]);
+    //         const tokenAddress = await instance.token.call();
+    //
+    //         const circleTokenInstance = CircleToken.at(tokenAddress);
+    //
+    //         const totalSupply = await circleTokenInstance.totalSupply();
+    //         console.log("totalSupply:", totalSupply);
+    //         console.log("tokenAddress:", tokenAddress);
+    //
+    //         const communityCircleToken = CircleToken.at(tokenAddress);
+    //         const communityTokenAmount = await communityCircleToken.balanceOf(accounts[4]);
+    //         // assert.equal(communityTokenAmount.toNumber(), 0 * 1e18, 'The remind token ~');
+    //         done();
+    //     });
+    // });
 
 
     // it('one ETH should buy 30000 Circle in _preSaleRate', function (done) {

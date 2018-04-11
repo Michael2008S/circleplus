@@ -9,7 +9,7 @@ import "./zeppelin/crowdsale/distribution/FinalizableCrowdsale.sol";
 import "./zeppelin/token/ERC20/TokenTimelock.sol";
 import "./zeppelin/token/ERC20/TokenVesting.sol";
 
-contract CircleCrowdsale is Ownable, MintedCrowdsale, FinalizableCrowdsale {
+contract CircleCrowdsale is Ownable, MintedCrowdsale {
 
     // Crowdsale Stage
     // ============
@@ -37,6 +37,10 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale, FinalizableCrowdsale {
     uint256 public totalTokenMintedPreSale;
     uint256 public totalTokenMintedOpen;
 
+    uint256 public totalTeamFundMinted;
+    uint256 public totalCommunityFundMinted;
+    uint256 public totalMarketingFundMinted;
+
     // ===================
 
     // Stage Rate
@@ -53,13 +57,11 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale, FinalizableCrowdsale {
     uint256 public constant TEAM_VESTING_CLIFF = 30 * 6 days;
     uint256 public constant TEAM_VESTING_DURATION = 2 years;
 
-
     ERC20 _token = new Circle();
 
     // Constructor
     // ============
-    function CircleCrowdsale(uint256 _openingTime, uint256 _closingTime, uint256 _rate, address _wallet) public
-    TimedCrowdsale(_openingTime, _closingTime)
+    function CircleCrowdsale(uint256 _rate, address _wallet) public
     Crowdsale(_rate, _wallet, _token)
     {
     }
@@ -101,30 +103,21 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale, FinalizableCrowdsale {
         return true;
     }
 
-    // Finish: Mint Extra Tokens as needed before finalizing the Crowdsale.
-    // ====================================================================
     function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) onlyOwner external {
+        if (teamFund - totalTeamFundMinted > 0) {
+            TokenVesting _teamTokenVesting = new TokenVesting(_teamFundWallet, now, TEAM_VESTING_CLIFF, TEAM_VESTING_DURATION, true);
+            MintableToken(token).mint(_teamTokenVesting, teamFund - totalTeamFundMinted);
+            totalTeamFundMinted = teamFund - totalTeamFundMinted;
+        }
 
-        require(!isFinalized);
-
-        uint256 alreadyMinted = token.totalSupply();
-        require(alreadyMinted < totalSupplyMax);
-
-        TokenVesting _teamTokenVesting = new TokenVesting(_teamFundWallet, now, TEAM_VESTING_CLIFF, TEAM_VESTING_DURATION, true);
-        MintableToken(token).mint(_teamTokenVesting, teamFund);
-        MintableToken(token).mint(_communityFundWallet, communityFund);
-        MintableToken(token).mint(_marketingFundWallet, marketingFund);
-
-        //  remind token to another wallet
-
-        finalize();
+        if (communityFund - totalCommunityFundMinted > 0) {
+            MintableToken(token).mint(_communityFundWallet, communityFund - totalCommunityFundMinted);
+            totalCommunityFundMinted += communityFund - totalCommunityFundMinted;
+        }
+        if (marketingFund - totalMarketingFundMinted > 0) {
+            MintableToken(token).mint(_marketingFundWallet, marketingFund - totalMarketingFundMinted);
+            totalMarketingFundMinted += marketingFund - totalMarketingFundMinted;
+        }
     }
-    // ===============================
 
-
-    // REMOVE THIS FUNCTION ONCE YOU ARE READY FOR PRODUCTION
-    // USEFUL FOR TESTING `finish()` FUNCTION
-    function hasEnded() public view returns (bool) {
-        return true;
-    }
 }

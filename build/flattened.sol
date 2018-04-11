@@ -468,6 +468,25 @@ contract Crowdsale {
   }
 }
 
+// File: contracts/zeppelin/crowdsale/emission/MintedCrowdsale.sol
+
+/**
+ * @title MintedCrowdsale
+ * @dev Extension of Crowdsale contract whose tokens are minted in each purchase.
+ * Token ownership should be transferred to MintedCrowdsale for minting. 
+ */
+contract MintedCrowdsale is Crowdsale {
+
+  /**
+   * @dev Overrides delivery by minting tokens upon purchase.
+   * @param _beneficiary Token purchaser
+   * @param _tokenAmount Number of tokens to be minted
+   */
+  function _deliverTokens(address _beneficiary, uint256 _tokenAmount) internal {
+    require(MintableToken(token).mint(_beneficiary, _tokenAmount));
+  }
+}
+
 // File: contracts/zeppelin/crowdsale/validation/TimedCrowdsale.sol
 
 /**
@@ -518,63 +537,6 @@ contract TimedCrowdsale is Crowdsale {
     super._preValidatePurchase(_beneficiary, _weiAmount);
   }
 
-}
-
-// File: contracts/zeppelin/crowdsale/distribution/FinalizableCrowdsale.sol
-
-/**
- * @title FinalizableCrowdsale
- * @dev Extension of Crowdsale where an owner can do extra work
- * after finishing.
- */
-contract FinalizableCrowdsale is TimedCrowdsale, Ownable {
-  using SafeMath for uint256;
-
-  bool public isFinalized = false;
-
-  event Finalized();
-
-  /**
-   * @dev Must be called after crowdsale ends, to do some extra finalization
-   * work. Calls the contract's finalization function.
-   */
-  function finalize() onlyOwner public {
-    require(!isFinalized);
-    require(hasClosed());
-
-    finalization();
-    Finalized();
-
-    isFinalized = true;
-  }
-
-  /**
-   * @dev Can be overridden to add finalization logic. The overriding function
-   * should call super.finalization() to ensure the chain of finalization is
-   * executed entirely.
-   */
-  function finalization() internal {
-  }
-
-}
-
-// File: contracts/zeppelin/crowdsale/emission/MintedCrowdsale.sol
-
-/**
- * @title MintedCrowdsale
- * @dev Extension of Crowdsale contract whose tokens are minted in each purchase.
- * Token ownership should be transferred to MintedCrowdsale for minting. 
- */
-contract MintedCrowdsale is Crowdsale {
-
-  /**
-   * @dev Overrides delivery by minting tokens upon purchase.
-   * @param _beneficiary Token purchaser
-   * @param _tokenAmount Number of tokens to be minted
-   */
-  function _deliverTokens(address _beneficiary, uint256 _tokenAmount) internal {
-    require(MintableToken(token).mint(_beneficiary, _tokenAmount));
-  }
 }
 
 // File: contracts/zeppelin/token/ERC20/SafeERC20.sol

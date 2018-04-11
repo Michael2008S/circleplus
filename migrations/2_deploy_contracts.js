@@ -25,7 +25,7 @@ module.exports = function (deployer) {
         // startTime,
         // endTime,
         20000,
-        "0x0c5b6E53Cb6128A311d999679A8ACAfFC66CC4C6"
+        "0x70D46b39f41d0EC0B10Ce8adD2C6cA81e23ec779"
     ).then(function () {
     });
 

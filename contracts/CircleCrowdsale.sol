@@ -5,7 +5,6 @@ import "./zeppelin/crowdsale/Crowdsale.sol";
 import "./zeppelin/ownership/Ownable.sol";
 import "./zeppelin/crowdsale/emission/MintedCrowdsale.sol";
 import "./zeppelin/crowdsale/validation/TimedCrowdsale.sol";
-import "./zeppelin/crowdsale/distribution/FinalizableCrowdsale.sol";
 import "./zeppelin/token/ERC20/TokenTimelock.sol";
 import "./zeppelin/token/ERC20/TokenVesting.sol";
 

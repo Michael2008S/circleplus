@@ -19,15 +19,15 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
 
     // Token Distribution
     // =============================
-    uint256 public totalSupplyMax   = 2000000000 * (10 ** 18); // There will be total 2,000,000,000 Circle Tokens
+    uint256 public totalSupplyMax = 2000000000 * (10 ** 18); // There will be total 2,000,000,000 Circle Tokens
 
-    uint256 public angelRound       = 200000000 * (10 ** 18);   // Angel Investors 200,000,000 (10%)
-    uint256 public preSaleRound     = 400000000 * (10 ** 18);   // PreSale Round 400,000,000 (20%)
-    uint256 public openRound        = 200000000 * (10 ** 18);   // Open Round 100,000,000 (10%)
+    uint256 public angelRound = 200000000 * (10 ** 18);   // Angel Investors 200,000,000 (10%)
+    uint256 public preSaleRound = 400000000 * (10 ** 18);   // PreSale Round 400,000,000 (20%)
+    uint256 public openRound = 200000000 * (10 ** 18);   // Open Round 100,000,000 (10%)
 
-    uint256 public teamFund         = 400000000 * (10 ** 18);   // Team/Foundation 400,000,000 (20%) cliff 6mon
-    uint256 public communityFund    = 400000000 * (10 ** 18);   // Community 400,000,000 (20%)
-    uint256 public marketingFund    = 400000000 * (10 ** 18);   // Marketing 400,000,000 (20%)
+    uint256 public teamFund = 400000000 * (10 ** 18);   // Team/Foundation 400,000,000 (20%) cliff 6mon
+    uint256 public communityFund = 400000000 * (10 ** 18);   // Community 400,000,000 (20%)
+    uint256 public marketingFund = 400000000 * (10 ** 18);   // Marketing 400,000,000 (20%)
     // ==============================
 
     // Amount minted in Every Stage
@@ -69,6 +69,10 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
     // =============
 
     function() external payable {
+        revert();
+    }
+
+    function buyTokens(address _beneficiary) public payable {
         revert();
     }
 

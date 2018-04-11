@@ -22,9 +22,9 @@ module.exports = function (deployer) {
 
     deployer.deploy(
         CircleCrowdsale,
-        startTime,
-        endTime,
-        5,
+        // startTime,
+        // endTime,
+        20000,
         "0x0c5b6E53Cb6128A311d999679A8ACAfFC66CC4C6"
     ).then(function () {
     });

@@ -40,7 +40,6 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
     uint256 public totalTeamFundMinted;
     uint256 public totalCommunityFundMinted;
     uint256 public totalMarketingFundMinted;
-
     // ===================
 
     // Stage Rate

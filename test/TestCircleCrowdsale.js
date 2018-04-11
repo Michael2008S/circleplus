@@ -95,8 +95,19 @@ contract('CircleCrowdsale', function (accounts) {
 
             const totalSupply = await circleTokenInstance.totalSupply();
             console.log("totalSupply:", totalSupply);
-            console.log("tokenAddress:", tokenAddress);
 
+            console.log("totalTokenMintedAngel:",await instance.totalTokenMintedAngel());
+            console.log("totalTokenMintedPreSale:",await instance.totalTokenMintedPreSale());
+            console.log("totalTokenMintedOpen:",await instance.totalTokenMintedOpen());
+
+            console.log("totalTeamFundMinted:",await instance.totalTeamFundMinted());
+            console.log("totalCommunityFundMinted:",await instance.totalCommunityFundMinted());
+            console.log("totalMarketingFundMinted:",await instance.totalMarketingFundMinted());
+
+
+            console.log("circleTokenInstance.name:",await circleTokenInstance.name());
+
+            console.log("tokenAddress:", tokenAddress);
 
             // TODO test vesting
             const teamTokenAmount = await circleTokenInstance.balanceOf(accounts[1]);

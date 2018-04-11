@@ -11,7 +11,7 @@ contract('CircleCrowdsale', function (accounts) {
         });
     });
 
-    // TODO test owner,time lock,time vesting
+    // TODO test owner,time lock
 
     it('one ETH should buy 20000 Circle in _openRate', function (done) {
         CircleTokenCrowdsale.deployed().then(async function (instance) {
@@ -106,6 +106,10 @@ contract('CircleCrowdsale', function (accounts) {
 
 
             console.log("circleTokenInstance.name:",await circleTokenInstance.name());
+            console.log("circleTokenInstance.symbol:",await circleTokenInstance.symbol());
+            console.log("circleTokenInstance.decimals:",await circleTokenInstance.decimals());
+            console.log("circleTokenInstance.owner:",await circleTokenInstance.owner());
+            console.log("CircleTokenCrowdsale.owner:",await instance.owner());
 
             console.log("tokenAddress:", tokenAddress);
 

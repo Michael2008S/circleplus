@@ -22,13 +22,13 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
     // =============================
     uint256 public totalSupplyMax = 20000000000 * (10 ** 18); // There will be total 20,000,000,000 Circle Tokens
 
-    uint256 public angelRound = 100000000 * (10 ** 18);   // Angel Investors 100,000,000 (10%)
-    uint256 public preSaleRound = 400000000 * (10 ** 18);   // PreSale Round 400,000,000 (20%)
-    uint256 public openRound = 100000000 * (10 ** 18);   // Open Round 100,000,000 (10%)
+    uint256 public angelRound       = 200000000 * (10 ** 18);   // Angel Investors 200,000,000 (10%)
+    uint256 public preSaleRound     = 400000000 * (10 ** 18);   // PreSale Round 400,000,000 (20%)
+    uint256 public openRound        = 200000000 * (10 ** 18);   // Open Round 100,000,000 (10%)
 
-    uint256 public teamFund = 400000000 * (10 ** 18);   // Team/Foundation 400,000,000 (20%) cliff 6mon
-    uint256 public communityFund = 400000000 * (10 ** 18);   // Community 400,000,000 (20%)
-    uint256 public marketingFund = 400000000 * (10 ** 18);   // Marketing 400,000,000 (20%)
+    uint256 public teamFund         = 400000000 * (10 ** 18);   // Team/Foundation 400,000,000 (20%) cliff 6mon
+    uint256 public communityFund    = 400000000 * (10 ** 18);   // Community 400,000,000 (20%)
+    uint256 public marketingFund    = 400000000 * (10 ** 18);   // Marketing 400,000,000 (20%)
     // ==============================
 
     // Amount minted in Every Stage
@@ -52,8 +52,11 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
     // angel locked tokens
     TokenTimelock public angelTimeLock;
 
+    // team vesting tokens
+    TokenVesting public teamTokenVesting;
+
     // team vesting
-    uint256 public constant TEAM_VESTING_CLIFF = 30 * 6 days;
+    uint256 public constant TEAM_VESTING_CLIFF = 6 * 30 days;
     uint256 public constant TEAM_VESTING_DURATION = 2 years;
 
     ERC20 _token = new Circle();
@@ -104,8 +107,8 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
 
     function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) onlyOwner external {
         if (teamFund - totalTeamFundMinted > 0) {
-            TokenVesting _teamTokenVesting = new TokenVesting(_teamFundWallet, now, TEAM_VESTING_CLIFF, TEAM_VESTING_DURATION, true);
-            MintableToken(token).mint(_teamTokenVesting, teamFund - totalTeamFundMinted);
+            teamTokenVesting = new TokenVesting(_teamFundWallet, now, TEAM_VESTING_CLIFF, TEAM_VESTING_DURATION, true);
+            MintableToken(token).mint(teamTokenVesting, teamFund - totalTeamFundMinted);
             totalTeamFundMinted = teamFund - totalTeamFundMinted;
         }
 

@@ -117,8 +117,8 @@ contract('CircleCrowdsale', function (accounts) {
             console.log("timeVesting_release-->:", await timeVestingInstance.cliff());
             console.log("timeVesting_release-->:", await timeVestingInstance.duration());
             console.log("timeVesting_release-->:", await timeVestingInstance.revocable());
-            console.log("timeVesting_release-->:", timeVestingAddress);
-            console.log("timeVesting_release-->:", await timeVestingInstance.circleTokenInstance.balanceOf(timeVestingAddress));
+            console.log("timeVesting_addr-->:", timeVestingAddress);
+            console.log("timeVesting_release-->:", await circleTokenInstance.balanceOf(timeVestingAddress));
 
             const communityCircleToken = CircleToken.at(tokenAddress);
             const communityTokenAmount = await communityCircleToken.balanceOf(accounts[2]);

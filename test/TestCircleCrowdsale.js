@@ -29,10 +29,10 @@ contract('CircleCrowdsale', function (accounts) {
     });
 
 
-    it('one ETH should buy 60000 Circle in _angelRate,but will lock 3 month,so it get 0 Circle.', function (done) {
+    it('_angelRate,but will lock 3 month,so it get 0 Circle.', function (done) {
         CircleTokenCrowdsale.deployed().then(async function (instance) {
             // const data = await instance.sendTransaction({from: accounts[7], value: web3.toWei(1, "ether")});
-            await instance.investByLegalTender(accounts[4], 4e17, 0);
+            await instance.setAngelHolder(accounts[4]);
             const tokenAddress = await instance.token.call();
             console.log("tokenAddress:", tokenAddress);
             const circleToken = CircleToken.at(tokenAddress);
@@ -42,33 +42,15 @@ contract('CircleCrowdsale', function (accounts) {
             // angelTimeLock =
             timeLockAddress = await instance.angelTimeLock.call();
             timelockInstance = TokenTimelock.at(timeLockAddress);
-            console.log("timelock_release:", await timelockInstance.beneficiary());
-            console.log("timelock_release:", await timelockInstance.releaseTime());
-            console.log("timelock_release:", await circleToken.balanceOf(timeLockAddress));
-            console.log("timelock_addr:", timeLockAddress);
+            timelock_beneficiary = await timelockInstance.beneficiary();
+            console.log("timelock_release:", timelock_beneficiary);
+            assert.equal(timelock_beneficiary, accounts[4], 'The timelock_beneficiary equal what I set.');
 
-            // console.log("timelock_release:",await timelockInstance.release());
+            console.log("timelock_releaseTime:", await timelockInstance.releaseTime());
+            timelock_balance = await circleToken.balanceOf(timeLockAddress);
+            console.log("timelock_release:", timelock_balance);
+            assert.equal(timelock_balance, 200000000 * 1e18, 'The timelock_balance equal 200000000 * 1e18.');
 
-            done();
-        });
-    });
-
-    it('one ETH should buy 60000 Circle in _angelRate,but will lock 3 month,so it get 0 Circle.', function (done) {
-        CircleTokenCrowdsale.deployed().then(async function (instance) {
-            // const data = await instance.sendTransaction({from: accounts[7], value: web3.toWei(1, "ether")});
-            await instance.investByLegalTender(accounts[6], 6e17, 0);
-            const tokenAddress = await instance.token.call();
-            console.log("tokenAddress:", tokenAddress);
-            const circleToken = CircleToken.at(tokenAddress);
-            const tokenAmount = await circleToken.balanceOf(accounts[6]);
-            assert.equal(tokenAmount.toNumber(), 0 * 1e18, 'The sender should receive 0 tokens as _angelRate');
-
-            // angelTimeLock =
-            timeLockAddress = await instance.angelTimeLock.call();
-            timelockInstance = TokenTimelock.at(timeLockAddress);
-            console.log("timelock_release:", await timelockInstance.beneficiary());
-            console.log("timelock_release:", await timelockInstance.releaseTime());
-            console.log("timelock_release:", await circleToken.balanceOf(timeLockAddress));
             console.log("timelock_addr:", timeLockAddress);
 
             // console.log("timelock_release:",await timelockInstance.release());

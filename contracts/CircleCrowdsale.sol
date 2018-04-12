@@ -78,16 +78,7 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
 
     function investByLegalTender(address _beneficiary, uint256 _value, uint _stage) onlyOwner external returns (bool)  {
         uint256 _amount;
-        if (_stage == uint(CrowdsaleStage.AngelRound)) {
-            _amount = _angelRate * _value;
-            if (totalTokenMintedAngel + _amount > angelRound) {
-                return false;
-            }
-            // give tokens to angel with lock 90 days
-            angelTimeLock = new TokenTimelock(token, _beneficiary, uint64(now + 90 days));
-            MintableToken(token).mint(angelTimeLock, _amount);
-            totalTokenMintedAngel += _amount;
-        } else if (_stage == uint(CrowdsaleStage.PreSaleRound)) {
+        if (_stage == uint(CrowdsaleStage.PreSaleRound)) {
             _amount = _preSaleRate * _value;
             if (totalTokenMintedPreSale + _amount > preSaleRound) {
                 return false;
@@ -103,9 +94,19 @@ contract CircleCrowdsale is Ownable, MintedCrowdsale {
 
             MintableToken(token).mint(_beneficiary, _amount);
             totalTokenMintedOpen += _amount;
+        } else {
+            return false;
         }
 
         return true;
+    }
+
+    function setAngelHolder(address _angelFundWallet) onlyOwner external {
+        if (angelRound - totalTokenMintedAngel > 0) {
+            angelTimeLock = new TokenTimelock(token, _angelFundWallet, uint64(now + 90 days));
+            MintableToken(token).mint(angelTimeLock, angelRound - totalTokenMintedAngel);
+            totalTokenMintedAngel = angelRound - totalTokenMintedAngel;
+        }
     }
 
     function setReservedHolder(address _teamFundWallet, address _communityFundWallet, address _marketingFundWallet) onlyOwner external {
